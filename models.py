@@ -1,18 +1,18 @@
 from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 
 class PostCreate(BaseModel):
     author: str
-    content_tags: str
+    content_tags: Optional[str]
     content: str
-    created_date: datetime = datetime.utcnow()
+    date_created: datetime = datetime.utcnow()
 
 class Post(BaseModel):
-    post_id: int
+    id: int
     author: str
     content_tags: str
     content: str
-    created_date: datetime
-    updated_date: datetime
+    date_created: datetime
+    date_updated: datetime = None
 
-    
