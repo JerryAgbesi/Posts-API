@@ -1,9 +1,10 @@
 from fastapi import FastAPI,Depends,status,HTTPException
+from typing import Tuple
 from databases import Database
 from database import database,metadata,engine,get_database,posts
 from models import Post,PostCreate,PostUpdate
 from datetime import datetime
-import sqlalchemy
+
 
 
 app = FastAPI(title="Posts-API")
@@ -19,7 +20,7 @@ async def get_post_or_404(post_id: int,database: Database = Depends(get_database
     return Post(**get_post)  
 
 #skip and limit values to be used in pagination
-async def pagination(skip: int = 0,limit:int = 10) -> tuple[int,int]:
+async def pagination(skip: int = 0,limit:int = 10) -> Tuple[int,int]:
     return (skip,limit)
 
 
@@ -54,7 +55,7 @@ async def get_post(post: Post = Depends(get_post_or_404),database: Database = De
     
 #get a list of all posts
 @app.get("/posts")
-async def get_posts(pagination: tuple[int,int] = Depends(pagination),database: Database = Depends(get_database)) -> list[Post]:
+async def get_posts(pagination: Tuple[int,int] = Depends(pagination),database: Database = Depends(get_database)) -> list[Post]:
     skip,limit = pagination
     select_query = posts.select().offset(skip).limit(limit)
     rows =  await database.fetch_all(select_query)
