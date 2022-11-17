@@ -19,7 +19,7 @@ async def get_post_or_404(post_id: int,database: Database = Depends(get_database
     return Post(**get_post)  
 
 #skip and limit values to be used in pagination
-async def pagination(skip: int = 0,limit= 10) -> tuple[int,int]:
+async def pagination(skip: int = 0,limit:int = 10) -> tuple[int,int]:
     return (skip,limit)
 
 
