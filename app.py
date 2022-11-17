@@ -41,7 +41,12 @@ async def startup():
 
 @app.on_event("shutdown")
 async def shutdown():
-    await database.disconnect()   
+    await database.disconnect()
+
+#Home route
+@app.get("/")
+async def home():
+    return {"Welcome to the Posts API, redirect to /posts to get all posts"}       
 
 
 #Create a new post 
