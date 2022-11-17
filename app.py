@@ -1,5 +1,6 @@
 from fastapi import FastAPI,Depends,status,HTTPException
 from typing import Tuple,List
+from fastapi.middleware.cors import CORSMiddleware
 from databases import Database
 from database import database,metadata,engine,get_database,posts
 from models import Post,PostCreate,PostUpdate
@@ -8,6 +9,15 @@ from datetime import datetime
 
 
 app = FastAPI(title="Posts-API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 async def get_post_or_404(post_id: int,database: Database = Depends(get_database)):
     get_query = posts.select().where(posts.c.id == post_id)
