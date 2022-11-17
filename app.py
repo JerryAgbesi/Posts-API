@@ -55,7 +55,7 @@ async def get_post(post: Post = Depends(get_post_or_404),database: Database = De
     
 #get a list of all posts
 @app.get("/posts")
-async def get_posts(pagination: Tuple[int,int] = Depends(pagination),database: Database = Depends(get_database)) -> list[Post]:
+async def get_posts(pagination: tuple = Depends(pagination),database: Database = Depends(get_database)) -> list[Post]:
     skip,limit = pagination
     select_query = posts.select().offset(skip).limit(limit)
     rows =  await database.fetch_all(select_query)
