@@ -1,7 +1,8 @@
 from fastapi import FastAPI,Depends,status,HTTPException
 from databases import Database
 from database import database,metadata,engine,get_database,posts
-from models import Post,PostCreate
+from models import Post,PostCreate,PostUpdate
+from datetime import datetime
 import sqlalchemy
 
 
@@ -59,8 +60,26 @@ async def get_posts(pagination: tuple[int,int] = Depends(pagination),database: D
 
     return result
 
-@app.patch("/posts/{id}")
-async def update_post(post: Post = Depends(get_post_or_404),database: Database = Depends(get_database)) -> Post:
-    
+@app.patch("/posts/{post_id}")
+async def update_post(p:PostUpdate,post: Post = Depends(get_post_or_404),database: Database = Depends(get_database)) -> Post:
+    update_query = posts.update().where(posts.c.id == post.id).values(p.dict(exclude_unset=True))
+    print(p.dict(exclude_unset=True))
+    await database.execute(update_query)
+
+    result = await get_post_or_404(post.id,database)
+
+    return result
+
+@app.delete("/posts/{post_id}",status_code=status.HTTP_204_NO_CONTENT)
+async def delete_post(post:Post = Depends(get_post_or_404),database: Database = Depends(get_database)):
+    query = posts.delete().where(posts.c.id == post.id)
+
+    await database.execute(query)
+
+
+
+
+
+
 
                                                                                                           

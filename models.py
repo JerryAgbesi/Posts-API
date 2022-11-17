@@ -7,6 +7,14 @@ class PostCreate(BaseModel):
     content_tags: Optional[str]
     content: str
     date_created: datetime = datetime.utcnow()
+    date_updated: Optional[datetime] 
+
+
+class PostUpdate(BaseModel):
+    author: str
+    content_tags: Optional[str]
+    content: str
+    date_updated: datetime = datetime.utcnow()  
 
 class Post(BaseModel):
     id: int
@@ -14,5 +22,5 @@ class Post(BaseModel):
     content_tags: str
     content: str
     date_created: datetime
-    date_updated: datetime = None
+    date_updated: Optional[datetime] 
 
