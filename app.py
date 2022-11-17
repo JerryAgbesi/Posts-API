@@ -18,6 +18,7 @@ async def get_post_or_404(post_id: int,database: Database = Depends(get_database
 
     return Post(**get_post)  
 
+#skip and limit values to be used in pagination
 async def pagination(skip: int = 0,limit= 10) -> tuple[int,int]:
     return (skip,limit)
 
@@ -33,7 +34,7 @@ async def shutdown():
 
 
 #Create a new post 
-@app.post("/posts")
+@app.post("/posts",status_code=status.HTTP_201_CREATED)
 async def create_post(post:PostCreate,database: Database = Depends(get_database)) -> Post:
     post_query = posts.insert().values(post.dict())
     query_id = await database.execute(post_query)
@@ -41,6 +42,7 @@ async def create_post(post:PostCreate,database: Database = Depends(get_database)
 
     return row
 
+#get a post based on its id
 @app.get("/posts/{post_id}",response_model=Post)
 async def get_post(post: Post = Depends(get_post_or_404),database: Database = Depends(get_database)) -> Post:
     postquery = posts.select().where(posts.c.id == post.id)
@@ -50,7 +52,7 @@ async def get_post(post: Post = Depends(get_post_or_404),database: Database = De
     return Post(**row)
 
     
-
+#get a list of all posts
 @app.get("/posts")
 async def get_posts(pagination: tuple[int,int] = Depends(pagination),database: Database = Depends(get_database)) -> list[Post]:
     skip,limit = pagination
@@ -60,16 +62,21 @@ async def get_posts(pagination: tuple[int,int] = Depends(pagination),database: D
 
     return result
 
+#Update a post
 @app.patch("/posts/{post_id}")
 async def update_post(p:PostUpdate,post: Post = Depends(get_post_or_404),database: Database = Depends(get_database)) -> Post:
+    #change date to current date on update
+    p.date_updated = datetime.utcnow()
+
     update_query = posts.update().where(posts.c.id == post.id).values(p.dict(exclude_unset=True))
-    print(p.dict(exclude_unset=True))
+  
     await database.execute(update_query)
 
     result = await get_post_or_404(post.id,database)
 
     return result
 
+#Delete a post
 @app.delete("/posts/{post_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(post:Post = Depends(get_post_or_404),database: Database = Depends(get_database)):
     query = posts.delete().where(posts.c.id == post.id)

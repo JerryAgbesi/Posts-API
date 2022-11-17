@@ -8,6 +8,7 @@ metadata = sqlalchemy.MetaData()
 
 database = Database(DATABASE_URL)
 
+
 posts = sqlalchemy.Table(
     "Post",
     metadata,

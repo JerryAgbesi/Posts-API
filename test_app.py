@@ -3,9 +3,11 @@ from app import app
 
 testclient = TestClient(app)
 
+record_number = 1
 
+#Test POST endpoint for a 201 status code
 def test_create_post():
-    response = testclient.post("http://127.0.0.1:8000/posts",json={
+    response = testclient.post(f"http://127.0.0.1:8000/posts",json={
         "author": "IBM",
         "content_tags": "API,websockets,backend",
         "content":'''What is a message broker?
@@ -23,15 +25,32 @@ def test_create_post():
                     Message brokers may comprise queue managers to handle the interactions between multiple message queues, as well as services providing data routing, message translation, persistence, and client state management functionalities.''',
         
         })
-    assert response.status_code == 200 
+    assert response.status_code == 201 
 
+#Test GET endpoint for a 200 status code
 def test_get_post():
-    response = testclient.get("http://127.0.0.1:8000/posts/1")
+    response = testclient.get(f"http://127.0.0.1:8000/posts/{record_number}")
     assert response.status_code == 200 
 
+#Test GET endpoint for a 200 status code
 def test_get_posts():
     response = testclient.get("http://127.0.0.1:8000/posts")
     assert response.status_code == 200 
+
+#Test PATCH endpoint for a 200 status code
+def test_update_post():
+    response = testclient.patch(f"http://127.0.0.1:8000/posts/{record_number}",json={
+        "content_tags":"Message brokers"
+
+    })
+    assert response.status_code == 200 
+
+# #Test DELETE endpoint for a 204 status code
+# def test_delete_post():
+#     response = testclient.delete(f"http://127.0.0.1:8000/posts/{record_number}")
+#     assert response.status_code == 204
+
+
 
 
 

@@ -11,9 +11,9 @@ class PostCreate(BaseModel):
 
 
 class PostUpdate(BaseModel):
-    author: str
+    author: Optional[str]
     content_tags: Optional[str]
-    content: str
+    content: Optional[str]
     date_updated: datetime = datetime.utcnow()  
 
 class Post(BaseModel):
