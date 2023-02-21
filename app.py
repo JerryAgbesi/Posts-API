@@ -1,10 +1,12 @@
-from fastapi import FastAPI,Depends,status,HTTPException
+from fastapi import FastAPI,Depends,status,HTTPException,Body
 from typing import Tuple,List
 from fastapi.middleware.cors import CORSMiddleware
 from databases import Database
 from database import database,metadata,engine,get_database,posts
-from models import Post,PostCreate,PostUpdate
+from models import Post,PostCreate,PostUpdate,UserSignup,UserSignin
+from Auth.jwt_handler import signJWT
 from datetime import datetime
+
 
 
 
@@ -98,6 +100,15 @@ async def delete_post(post:Post = Depends(get_post_or_404),database: Database = 
     query = posts.delete().where(posts.c.id == post.id)
 
     await database.execute(query)
+
+@app.post("/signup",["user"],status_code=status.HTTP_201_CREATED)
+async def user_signup(user:UserSignup = Body(default=None),database = Depends(get_database)):
+    signup_query = posts.insert().values(user.dict())
+    query_id = await database.execute(signup_query)
+    row = await get_post_or_404(query_id,database)
+
+
+
 
 
 

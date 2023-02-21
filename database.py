@@ -20,6 +20,15 @@ posts = sqlalchemy.Table(
     sqlalchemy.Column("date_updated",sqlalchemy.DateTime,nullable = True)
 )
 
+users = sqlalchemy.Table(
+    "User",
+    metadata,
+    sqlalchemy.Column("id",sqlalchemy.Integer,primary_key=True),
+    sqlalchemy.Column("username",sqlalchemy.String(100),nullable = False),
+    sqlalchemy.Column("email",sqlalchemy.String(100)),
+    sqlalchemy.Column("password",sqlalchemy.String(1200),nullable = False),
+)
+
 engine = sqlalchemy.create_engine(DATABASE_URL)
 
 def get_database() -> Database:
