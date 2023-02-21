@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,EmailStr,Field
 from typing import Optional
 from datetime import datetime
 
@@ -23,4 +23,33 @@ class Post(BaseModel):
     content: str
     date_created: datetime
     date_updated: Optional[datetime] 
+
+class UserSignup(BaseModel):
+    email: EmailStr = Field(...)
+    password: str = Field(...)
+    username: str = Field(default=None)
+
+    class config:
+        schema = {
+            "example":{
+                    "email":"someone@gmail.com",
+                    "password":"someonepass123",
+                    "username":"writergee"
+            }
+        }
+
+class UserSignin(BaseModel):
+    email: EmailStr = Field(...)
+    password: str = Field(...)
+
+    class config:
+        schema = {
+            "example":{
+                    "email":"someone@gmail.com",
+                    "password":"someonepass123",
+                   
+            }
+        }
+
+
 
